@@ -193,7 +193,6 @@ function app() {
         pushLoading: false,
         pushError: null,
         pushReminderTime: '09:00',
-        showAccountSection: false,
         accountDetails: null,
         accountLoading: false,
         showDeleteConfirm: false,

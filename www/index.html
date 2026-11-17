@@ -43,22 +43,16 @@
                     <template x-if="!authUser">
                         <button class="header-btn header-btn-auth" @click="openAuthModal('login')" title="Sign in">Sign In</button>
                     </template>
-                    <template x-if="authUser">
-                        <div class="header-auth-badge" x-data="{ authMenuOpen: false }" @click.away="authMenuOpen = false">
-                            <button class="header-btn header-btn-account" @click="authMenuOpen = !authMenuOpen" :title="authUser.email" :aria-expanded="authMenuOpen">
-                                👤 <span class="auth-email-short" x-text="authUser.email.split('@')[0]"></span>
-                            </button>
-                            <div class="nav-dropdown" x-show="authMenuOpen" x-transition @click="authMenuOpen = false">
-                                <div class="nav-dropdown-header" x-text="authUser.email"></div>
-                                <button class="nav-dropdown-item" @click="currentView = 'settings'; showAccountSection = true; loadAccountDetails()">Account</button>
-                                <button class="nav-dropdown-item nav-dropdown-item-danger" @click="logout()">Sign Out</button>
-                            </div>
-                        </div>
-                    </template>
                     <button class="header-btn" @click="navMenuOpen = !navMenuOpen" title="Menu" :aria-expanded="navMenuOpen">☰</button>
                     <div class="nav-dropdown" x-show="navMenuOpen" x-transition @click="navMenuOpen = false">
+                        <template x-if="authUser">
+                            <div class="nav-dropdown-header" x-text="authUser.email"></div>
+                        </template>
                         <button class="nav-dropdown-item" @click="currentView = 'entries'; window.scrollTo(0, 0);">All Entries</button>
-                        <button class="nav-dropdown-item" @click="currentView = 'settings'">Settings</button>
+                        <button class="nav-dropdown-item" @click="currentView = 'settings'; if (authUser) loadAccountDetails()">Settings</button>
+                        <template x-if="authUser">
+                            <button class="nav-dropdown-item nav-dropdown-item-danger" @click="logout()">Sign Out</button>
+                        </template>
                     </div>
                 </div>
             </div>

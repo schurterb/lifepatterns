@@ -3,6 +3,11 @@
 A privacy-first, local-first PWA for tracking daily metrics and discovering patterns in your own life.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Status: In Development](https://img.shields.io/badge/Status-In%20Development-orange.svg)]()
+
+> **Disclaimer:** Life Patterns is a personal wellness tracking tool — it does **not** provide medical advice. Insights and correlations are observational. Consult a healthcare professional for medical concerns.
+>
+> **Status:** This project is in active development. Some features — including accounts, cloud sync, and other paid-tier features — are not yet fully implemented.
 
 Log mood, sleep, exercise, nutrition, and more — then visualize trends and surface correlations between what you do and how you feel. All data stays on your device by default; optional end-to-end-encrypted cloud sync is available for backup and multi-device access.
 
@@ -16,13 +21,13 @@ Log mood, sleep, exercise, nutrition, and more — then visualize trends and sur
 - **Local-first storage** — all entries live in IndexedDB on your device; no account required
 - **Flexible tracking** — mood, sleep, exercise, nutrition, water, medication, weight, temperature, and pain out of the box, plus user-defined custom data types
 - **Pattern visualizer** — interactive charts with lagged correlation analysis (e.g., "how does yesterday's sleep affect today's mood?")
-- **Environmental context** — weather (Open-Meteo), geomagnetic activity (NOAA SWPC), and client-side lunar phases logged alongside your entries
+- **Environmental context** — weather (Open-Meteo), geomagnetic activity (NOAA SWPC), and more, logged alongside your entries
 - **Import/export** — full CSV and JSON backup/restore with hardened import validation
 - **Installable PWA** — service worker for offline use, add-to-home-screen on mobile
 - **Reminders** — in-app prompts and Web Push notifications at configurable times
-- **Optional accounts & sync** — JWT-authenticated backend with end-to-end-encrypted cloud sync (AES-GCM-256; the server only ever stores ciphertext)
-- **AI-powered insights** — pattern summaries via Cloudflare Workers AI (OpenAI fallback) and photo-based nutrition estimation (paid tier)
-- **Subscriptions** — Stripe-powered paid tier for sync and AI features
+- **Optional accounts & sync** *(in development)* — JWT-authenticated backend with end-to-end-encrypted cloud sync (AES-GCM-256; the server only ever stores ciphertext)
+- **AI-powered insights** *(in development)* — pattern summaries via Cloudflare Workers AI (OpenAI fallback) and photo-based nutrition estimation (paid tier)
+- **Subscriptions** *(in development)* — Stripe-powered paid tier for sync and AI features
 
 ## Architecture
 
@@ -134,12 +139,6 @@ pattern_tracker/
 ├── docs/           # project documentation
 └── wrangler.toml   # Cloudflare config (placeholders — see Backend Setup)
 ```
-
-## Privacy & Disclaimer
-
-Life Patterns is for **personal wellness tracking only**. It does not provide medical advice; insights and correlations are observational. Consult a healthcare professional for medical concerns.
-
-Your data stays on your device unless you explicitly opt in to encrypted cloud sync.
 
 ## License
 

@@ -1524,31 +1524,6 @@ textarea {
 }
 .header-btn-auth:hover { background-color: var(--color-primary-dark); }
 
-.header-auth-badge { position: relative; }
-
-.header-btn-account {
-    font-size: 0.8rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background-color: var(--color-bg-secondary);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    transition: var(--transition);
-}
-.header-btn-account:hover { background-color: var(--color-border); }
-
-.auth-email-short {
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .nav-dropdown-header {
     padding: var(--spacing-xs) var(--spacing-md);
     font-size: 0.75rem;
