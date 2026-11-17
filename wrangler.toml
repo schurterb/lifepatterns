@@ -1,0 +1,122 @@
+name = "pattern-tracker"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+account_id = "your-cloudflare-account-id"
+workers_dev = true
+
+# Workers Logs — included at no charge on Workers Free (200k events/day cap)
+[observability]
+enabled = true
+
+# D1 Database bindings
+[[d1_databases]]
+binding = "DB"
+database_name = "pattern-tracker-db"
+database_id = "placeholder-d1-database-id"
+
+# KV Namespace bindings
+[[kv_namespaces]]
+binding = "TOKEN_KV"
+id = "placeholder-token-kv-id"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "placeholder-rate-limit-kv-id"
+
+[[kv_namespaces]]
+binding = "EXTERNAL_KV"
+id = "placeholder-external-kv-id"
+
+# AI binding for Workers AI
+[ai]
+binding = "AI"
+
+# R2 bucket for cloud sync (create with: wrangler r2 bucket create pattern-tracker-sync)
+# [[r2_buckets]]
+# binding = "SYNC_BUCKET"
+# bucket_name = "pattern-tracker-sync"
+
+# Environment variables
+[vars]
+# JWT_SECRET is set via `wrangler secret put JWT_SECRET` (deployed envs)
+# or .dev.vars (local `wrangler dev`) - never commit it.
+ALLOWED_ORIGIN = "*"
+
+[env.production]
+name = "pattern-tracker-prod"
+# API routes on the Pages custom domain. Route patterns take precedence over
+# Pages static serving on the same hostname, keeping the API same-origin so
+# cookie auth + CSP connect-src 'self' work unchanged.
+routes = [
+  { pattern = "lifepatterns.godsartificer.com/health", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/auth/*", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/account*", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/push/*", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/data/*", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/subscription/*", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/sync/*", zone_name = "godsartificer.com" },
+  { pattern = "lifepatterns.godsartificer.com/ai/*", zone_name = "godsartificer.com" },
+]
+
+# Production D1 binding
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "pattern-tracker-db-prod"
+database_id = "placeholder-prod-d1-id"
+
+# Production KV bindings
+[[env.production.kv_namespaces]]
+binding = "TOKEN_KV"
+id = "placeholder-prod-token-kv-id"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "placeholder-prod-rate-limit-kv-id"
+
+[[env.production.kv_namespaces]]
+binding = "EXTERNAL_KV"
+id = "placeholder-prod-external-kv-id"
+
+[env.production.ai]
+binding = "AI"
+
+[env.production.vars]
+# Set with: npx wrangler secret put JWT_SECRET --env production
+ALLOWED_ORIGIN = "https://lifepatterns.godsartificer.com"
+
+[env.development]
+name = "pattern-tracker-dev"
+workers_dev = true
+
+# Development D1 binding
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "pattern-tracker-db-dev"
+database_id = "placeholder-dev-d1-id"
+
+# Development KV bindings
+[[env.development.kv_namespaces]]
+binding = "TOKEN_KV"
+id = "placeholder-dev-token-kv-id"
+
+[[env.development.kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "placeholder-dev-rate-limit-kv-id"
+
+[[env.development.kv_namespaces]]
+binding = "EXTERNAL_KV"
+id = "placeholder-dev-external-kv-id"
+
+[env.development.ai]
+binding = "AI"
+
+# R2 bucket - requires enabling R2 in dashboard first
+# [[env.development.r2_buckets]]
+# binding = "SYNC_BUCKET"
+# bucket_name = "pattern-tracker-sync"
+
+[env.development.vars]
+# Set with: npx wrangler secret put JWT_SECRET --env development
+# or in .dev.vars for local development
+ALLOWED_ORIGIN = "*"

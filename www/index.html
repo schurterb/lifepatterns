@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Life Patterns - Track patterns in your daily life">
+    <meta name="theme-color" content="#1f2937">
+    <title>Life Patterns</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='bg1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230f172a'/><stop offset='100%25' stop-color='%231e3a8a'/></linearGradient></defs><rect width='192' height='192' rx='36' fill='url(%23bg1)'/><g opacity='0.15' stroke='%2394a3b8' stroke-width='1.5'><line x1='24' y1='56' x2='168' y2='56'/><line x1='24' y1='96' x2='168' y2='96'/><line x1='24' y1='136' x2='168' y2='136'/></g><path d='M 20 132 C 52 132, 64 68, 96 68 C 128 68, 140 120, 172 90' fill='none' stroke='%238b5cf6' stroke-width='9' stroke-linecap='round'/><path d='M 20 108 C 50 64, 76 134, 112 86 C 136 54, 152 60, 172 48' fill='none' stroke='%2310b981' stroke-width='10' stroke-linecap='round'/><path d='M 20 140 C 56 140, 72 46, 106 92 C 132 126, 148 44, 172 68' fill='none' stroke='%233b82f6' stroke-width='11' stroke-linecap='round'/><circle cx='96' cy='68' r='6' fill='%23ffffff' stroke='%238b5cf6' stroke-width='4'/><circle cx='112' cy='86' r='6.5' fill='%23ffffff' stroke='%2310b981' stroke-width='4'/><circle cx='148' cy='62' r='7' fill='%23ffffff' stroke='%233b82f6' stroke-width='4'/></svg>">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div id="app" x-data="app()" x-cloak>
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 @click="currentView = 'home'" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="32" height="32" style="border-radius: 7px; flex-shrink: 0;" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="header-bg1" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#0f172a"/>
+                                <stop offset="100%" stop-color="#1e3a8a"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="192" height="192" fill="url(#header-bg1)"/>
+                        <g opacity="0.15" stroke="#94a3b8" stroke-width="1.5">
+                            <line x1="24" y1="56" x2="168" y2="56"/>
+                            <line x1="24" y1="96" x2="168" y2="96"/>
+                            <line x1="24" y1="136" x2="168" y2="136"/>
+                        </g>
+                        <path d="M 20 132 C 52 132, 64 68, 96 68 C 128 68, 140 120, 172 90" fill="none" stroke="#8b5cf6" stroke-width="9" stroke-linecap="round"/>
+                        <path d="M 20 108 C 50 64, 76 134, 112 86 C 136 54, 152 60, 172 48" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+                        <path d="M 20 140 C 56 140, 72 46, 106 92 C 132 126, 148 44, 172 68" fill="none" stroke="#3b82f6" stroke-width="11" stroke-linecap="round"/>
+                        <circle cx="96" cy="68" r="6" fill="#ffffff" stroke="#8b5cf6" stroke-width="4"/>
+                        <circle cx="112" cy="86" r="6.5" fill="#ffffff" stroke="#10b981" stroke-width="4"/>
+                        <circle cx="148" cy="62" r="7" fill="#ffffff" stroke="#3b82f6" stroke-width="4"/>
+                    </svg>
+                    <span>Life Patterns</span>
+                </h1>
+                <div class="header-actions" x-data="{ navMenuOpen: false }" @click.away="navMenuOpen = false">
+                    <!-- Auth button -->
+                    <template x-if="!authUser">
+                        <button class="header-btn header-btn-auth" @click="openAuthModal('login')" title="Sign in">Sign In</button>
+                    </template>
+                    <template x-if="authUser">
+                        <div class="header-auth-badge" x-data="{ authMenuOpen: false }" @click.away="authMenuOpen = false">
+                            <button class="header-btn header-btn-account" @click="authMenuOpen = !authMenuOpen" :title="authUser.email" :aria-expanded="authMenuOpen">
+                                👤 <span class="auth-email-short" x-text="authUser.email.split('@')[0]"></span>
+                            </button>
+                            <div class="nav-dropdown" x-show="authMenuOpen" x-transition @click="authMenuOpen = false">
+                                <div class="nav-dropdown-header" x-text="authUser.email"></div>
+                                <button class="nav-dropdown-item" @click="currentView = 'settings'; showAccountSection = true; loadAccountDetails()">Account</button>
+                                <button class="nav-dropdown-item nav-dropdown-item-danger" @click="logout()">Sign Out</button>
+                            </div>
+                        </div>
+                    </template>
+                    <button class="header-btn" @click="navMenuOpen = !navMenuOpen" title="Menu" :aria-expanded="navMenuOpen">☰</button>
+                    <div class="nav-dropdown" x-show="navMenuOpen" x-transition @click="navMenuOpen = false">
+                        <button class="nav-dropdown-item" @click="currentView = 'entries'; window.scrollTo(0, 0);">All Entries</button>
+                        <button class="nav-dropdown-item" @click="currentView = 'settings'">Settings</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Screen (First Time) -->
+            <template x-if="showWelcome">
+                <div class="welcome-screen">
+                    <div class="welcome-card">
+                        <h2>Welcome to Life Patterns</h2>
+                        <p class="welcome-subtitle">Track patterns in your daily life to understand yourself better.</p>
+                        
+                        <div class="privacy-notice">
+                            <strong>⚠️ Important:</strong>
+                            <ul>
+                                <li>All data is stored locally on this device only</li>
+                                <li>This app is for personal wellness tracking only</li>
+                                <li>It does NOT provide medical advice</li>
+                                <li>Consult healthcare professionals for medical concerns</li>
+                            </ul>
+                        </div>
+
+                        <div class="type-selector">
+                            <h3>What would you like to track?</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" x-model="welcomeSettings.enabledTypes" value="mood" checked>
+                                    <span>😊 Mood (1-10 scale)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" x-model="welcomeSettings.enabledTypes" value="sleep" checked>
+                                    <span>😴 Sleep (hours)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" x-model="welcomeSettings.enabledTypes" value="exercise">
+                                    <span>🏃 Exercise (minutes)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" x-model="welcomeSettings.enabledTypes" value="nutrition">
+                                    <span>🍎 Nutrition (calories)</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" x-model="welcomeSettings.enabledTypes" value="water">
+                                    <span>💧 Water (cups/liters)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" @click="completeWelcome()">Get Started</button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Home View -->
+            <template x-if="!showWelcome && currentView === 'home'">
+                <div class="home-view">
+                    <!-- In-App Reminder Banner -->
+                    <template x-if="reminderBanner">
+                        <div class="reminder-banner" @click="dismissReminder()">
+                            <span x-text="reminderBanner"></span>
+                            <button class="close-btn">✕</button>
+                        </div>
+                    </template>
+
+                    <!-- Today's Data Entry -->
+                    <div class="quick-entry-section">
+                        <h2>Today's Data Entry</h2>
+                        <div class="quick-entry-buttons">
+                            <template x-for="type in missingTodayTypes" :key="type">
+                                <button class="quick-entry-btn" @click="openEntryForm(type)">
+                                    <span class="emoji" x-text="getTypeEmoji(type)"></span>
+                                    <span x-text="getTypeLabel(type)"></span>
+                                </button>
+                            </template>
+                        </div>
+                        <template x-if="missingTodayTypes.length === 0">
+                            <p class="empty-state">✅ All data logged for today!</p>
+                        </template>
+                    </div>
+
+                    <!-- Chart Section -->
+                    <div class="chart-section">
+                        <!-- Type Selector (collapsible) -->
+                        <div class="chart-controls">
+                            <div class="chart-type-selector">
+                                <button class="chart-selector-toggle" @click="chartSelectorOpen = !chartSelectorOpen">
+                                    <span>Select Data Types to Chart</span>
+                                    <span class="toggle-arrow" :class="{ open: chartSelectorOpen }">▾</span>
+                                </button>
+                                <div class="chart-type-grid" x-show="chartSelectorOpen" x-transition>
+                                    <div class="chart-type-grid-actions">
+                                        <button class="btn-link" @click="chartTypes = [...chartAvailableTypes]">Select All</button>
+                                        <button class="btn-link" @click="chartTypes = []">Deselect All</button>
+                                    </div>
+                                    <template x-for="type in chartAvailableTypes" :key="type">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" :value="type" x-model="chartTypes">
+                                            <span x-text="getTypeEmoji(type) + ' ' + getTypeLabel(type)"></span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Date Range Selector -->
+                            <div class="date-range-selector">
+                                <button class="range-btn" :class="{ active: chartRange === 7 }" @click="chartRange = 7">7 days</button>
+                                <button class="range-btn" :class="{ active: chartRange === 30 }" @click="chartRange = 30">30 days</button>
+                                <button class="range-btn" :class="{ active: chartRange === 90 }" @click="chartRange = 90">90 days</button>
+                            </div>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <template x-if="chartTypes.length === 0">
+                            <p class="empty-state">Select one or more data types to view their charts.</p>
+                        </template>
+                        <template x-if="chartTypes.length > 0">
+                            <div class="chart-container">
+                                <canvas id="chart-canvas"></canvas>
+                                <template x-if="isLoadingChartData">
+                                    <div class="chart-loading-overlay">Loading chart data...</div>
+                                </template>
+                                <template x-if="!isLoadingChartData && chartData.length === 0">
+                                    <div class="chart-empty-overlay">No data available for the selected types and date range.</div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- Correlation Analysis Section -->
+                        <template x-if="correlationLoading || chartCorrelations.length > 0">
+                            <div class="correlation-section">
+                                <div class="section-header">
+                                    <h3>Correlations</h3>
+                                    <button class="btn-small" @click="loadCorrelationsForChart()" :disabled="correlationLoading">
+                                        <span x-text="correlationLoading ? 'Analyzing...' : 'Refresh'"></span>
+                                    </button>
+                                </div>
+                                <p class="correlation-hint">Patterns between your tracked data over the last 90 days.</p>
+                                
+                                <template x-if="chartCorrelations.length > 0">
+                                    <div class="correlation-list-inline">
+                                        <template x-for="result in chartCorrelations" :key="`${result.type1}-${result.type2}`">
+                                            <div class="correlation-row">
+                                                <span class="correlation-pair">
+                                                    <span x-text="getTypeEmoji(result.type1)"></span>
+                                                    <span x-text="getTypeLabel(result.type1)"></span>
+                                                    <span class="correlation-arrow">↔</span>
+                                                    <span x-text="getTypeEmoji(result.type2)"></span>
+                                                    <span x-text="getTypeLabel(result.type2)"></span>
+                                                </span>
+                                                <span class="correlation-strength-label"
+                                                    :class="getCorrelationStrengthClass(result.correlation)"
+                                                    :title="result.correlation !== null ? 'Correlation: ' + result.correlation.toFixed(3) : 'N/A'"
+                                                    x-text="getCorrelationStrengthLabel(result.correlation)">
+                                                </span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template x-if="!correlationLoading && chartCorrelations.length === 0">
+                                    <p class="correlation-hint">Keep tracking! Correlations require at least 20 data points per data type.</p>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Entry Form Modal -->
+            <template x-if="!showWelcome && entryFormOpen">
+                <div class="modal-overlay" @click.self="closeEntryForm()">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 x-text="'Log ' + getTypeLabel(entryFormType)"></h2>
+                            <button class="close-btn" @click="closeEntryForm()">✕</button>
+                        </div>
+                        <form @submit.prevent="submitEntry()" class="entry-form">
+                            <!-- Type-specific input -->
+                            <template x-if="entryFormType === 'mood'">
+                                <div class="form-group">
+                                    <label>Mood: <span class="mood-value" x-text="entryFormData.value || 5"></span>/10</label>
+                                    <input type="range" 
+                                        x-model.number="entryFormData.value" 
+                                        min="0" 
+                                        max="10" 
+                                        step="0.5" 
+                                        class="mood-slider"
+                                        @input="if (!entryFormData.value) entryFormData.value = 5">
+                                    <div class="mood-labels">
+                                        <span>0 - Terrible</span>
+                                        <span>5 - Neutral</span>
+                                        <span>10 - Excellent</span>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="entryFormType === 'sleep'">
+                                <div class="form-group">
+                                    <label for="sleep-value">Hours Slept</label>
+                                    <input type="number" id="sleep-value" x-model.number="entryFormData.value" 
+                                        min="0" max="24" step="0.5" required>
+                                </div>
+                            </template>
+
+                            <template x-if="['exercise', 'nutrition', 'water'].includes(entryFormType)">
+                                <div class="form-group">
+                                    <label x-text="getTypeLabel(entryFormType) + ' (' + getTypeUnit(entryFormType) + ')'"></label>
+                                    <input type="number" x-model.number="entryFormData.value" 
+                                        :min="getTypeConstraints(entryFormType).min"
+                                        :max="getTypeConstraints(entryFormType).max"
+                                        step="0.1" required>
+                                </div>
+                            </template>
+
+                            <template x-if="entryFormType === 'pain'">
+                                <div class="form-group">
+                                    <label>Pain: <span class="mood-value" x-text="entryFormData.value ?? 0"></span>/10</label>
+                                    <input type="range"
+                                        x-model.number="entryFormData.value"
+                                        min="0"
+                                        max="10"
+                                        step="0.5"
+                                        class="mood-slider"
+                                        @input="if (entryFormData.value === null) entryFormData.value = 0">
+                                    <div class="mood-labels">
+                                        <span>0 - None</span>
+                                        <span>5 - Moderate</span>
+                                        <span>10 - Severe</span>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="entryFormType === 'temperature'">
+                                <div class="form-group">
+                                    <label for="temperature-value">Temperature (°F)</label>
+                                    <input type="number" id="temperature-value" x-model.number="entryFormData.value"
+                                        min="80" max="110" step="0.1" required>
+                                </div>
+                            </template>
+
+                            <template x-if="entryFormType === 'weight'">
+                                <div class="form-group">
+                                    <label for="weight-value">Weight (lbs)</label>
+                                    <input type="number" id="weight-value" x-model.number="entryFormData.value"
+                                        min="44" max="660" step="0.1" required>
+                                </div>
+                            </template>
+
+                            <template x-if="entryFormType === 'medication'">
+                                <div class="form-group">
+                                    <label for="medication-value">Medication Name</label>
+                                    <input type="text" id="medication-value" x-model="entryFormData.value"
+                                        placeholder="Enter medication name" maxlength="200" required>
+                                </div>
+                            </template>
+
+                            <!-- Custom Type Input -->
+                            <template x-if="entryFormType && entryFormType.startsWith('custom:')">
+                                <div class="form-group">
+                                    <label x-text="getTypeLabel(entryFormType) + (getTypeUnit(entryFormType) ? ' (' + getTypeUnit(entryFormType) + ')' : '')"></label>
+                                    <input type="number" x-model.number="entryFormData.value" 
+                                        :min="getTypeConstraints(entryFormType)?.min || 0"
+                                        :max="getTypeConstraints(entryFormType)?.max || 100"
+                                        :step="getTypeConstraints(entryFormType)?.step || 1"
+                                        required>
+                                </div>
+                            </template>
+
+                            <!-- Timestamp -->
+                            <div class="form-group">
+                                <label for="entry-time">Time</label>
+                                <input type="datetime-local" id="entry-time" x-model="entryFormData.timestamp" required>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="form-group">
+                                <label for="entry-notes">Notes (optional)</label>
+                                <textarea id="entry-notes" x-model="entryFormData.notes" 
+                                    maxlength="500" rows="3" placeholder="Add any notes..."></textarea>
+                                <small x-text="entryFormData.notes.length + '/500'"></small>
+                            </div>
+
+                            <!-- Duplicate Warning -->
+                            <template x-if="duplicateWarning">
+                                <div class="warning-box">
+                                    <strong>⚠️ Duplicate Entry Warning</strong>
+                                    <p x-text="duplicateWarning"></p>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" x-model="confirmDuplicate">
+                                        <span>I understand and want to save anyway</span>
+                                    </label>
+                                </div>
+                            </template>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary" 
+                                :disabled="duplicateWarning && !confirmDuplicate">
+                                Save Entry
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Entries View -->
+            <template x-if="!showWelcome && currentView === 'entries'">
+                <div class="entries-view">
+                    <div class="view-header">
+                        <h2>All Entries</h2>
+                        <div class="view-header-actions">
+                            <button class="btn btn-secondary" @click="openExportDialog()">&#128228; Export</button>
+                            <button class="btn btn-secondary" @click="openImportDialog()">&#128229; Import</button>
+                        </div>
+                    </div>
+
+                    <!-- Filter -->
+                    <div class="filter-section">
+                        <select x-model="filterType" class="filter-select">
+                            <option value="">All Types</option>
+                            <template x-for="type in settings.enabledTypes" :key="type">
+                                <option :value="type" x-text="getTypeLabel(type)"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    <!-- Entry List -->
+                    <template x-if="filteredEntries.length === 0">
+                        <p class="empty-state">No entries found.</p>
+                    </template>
+                    <template x-if="filteredEntries.length > 0">
+                        <div class="entry-list-full">
+                            <template x-for="entry in filteredEntries" :key="entry.id">
+                                <div class="entry-item-full">
+                                    <div class="entry-header">
+                                        <span class="entry-type-badge" x-text="getTypeEmoji(entry.type) + ' ' + getTypeLabel(entry.type)"></span>
+                                        <span class="entry-date" x-text="formatDate(entry.timestamp)"></span>
+                                    </div>
+                                    <div class="entry-body">
+                                        <div class="entry-value-large" x-text="formatEntryValue(entry)"></div>
+                                        <template x-if="entry.notes">
+                                            <p class="entry-notes" x-text="entry.notes"></p>
+                                        </template>
+                                    </div>
+                                    <div class="entry-actions">
+                                        <button class="btn-small" @click="editEntry(entry)">Edit</button>
+                                        <button class="btn-small btn-danger" @click="deleteEntry(entry.id)">Delete</button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+
+            <!-- Settings View -->
+            <template x-if="!showWelcome && currentView === 'settings'">
+                <div class="settings-view">
+                    <div class="view-header">
+                        <h2>Settings</h2>
+                    </div>
+
+                    <!-- Theme Setting -->
+                    <div class="settings-section">
+                        <h3>Appearance</h3>
+                        <div class="setting-item">
+                            <label>Theme</label>
+                            <select x-model="settings.theme" @change="saveSettings()" class="filter-select">
+                                <option value="auto">Auto (System)</option>
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Unit System -->
+                    <div class="settings-section">
+                        <h3>Units</h3>
+                        <div class="setting-item">
+                            <label>Measurement System</label>
+                            <select x-model="settings.unitSystem" @change="saveSettings()" class="filter-select">
+                                <option value="imperial">Imperial (lbs, °F, cups)</option>
+                                <option value="metric">Metric (kg, °C, liters)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Data Types -->
+                    <div class="settings-section">
+                        <h3>Data Types to Track</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="mood" @change="saveSettings()">
+                                <span>😊 Mood</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="sleep" @change="saveSettings()">
+                                <span>😴 Sleep</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="exercise" @change="saveSettings()">
+                                <span>🏃 Exercise</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="nutrition" @change="saveSettings()">
+                                <span>🍎 Nutrition</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="water" @change="saveSettings()">
+                                <span>💧 Water</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="medication" @change="saveSettings()">
+                                <span>💊 Medication</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="weight" @change="saveSettings()">
+                                <span>⚖️ Weight</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="temperature" @change="saveSettings()">
+                                <span>🌡️ Temperature</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.enabledTypes" value="pain" @change="saveSettings()">
+                                <span>😣 Pain</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate Warnings -->
+                    <div class="settings-section">
+                        <h3>Notifications</h3>
+                        <div class="setting-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" x-model="settings.duplicateWarnings" @change="saveSettings()">
+                                <span>Show duplicate entry warnings</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Custom Data Types -->
+                    <div class="settings-section">
+                        <h3>Custom Data Types</h3>
+                        <div class="setting-item">
+                            <button class="btn btn-secondary" @click="openCustomTypeDialog()">➕ Add Custom Type</button>
+                        </div>
+                        <template x-if="customTypes.length > 0">
+                            <div class="custom-types-list">
+                                <template x-for="customType in customTypes" :key="customType.id">
+                                    <div class="custom-type-item">
+                                        <span class="custom-type-emoji" x-text="customType.emoji"></span>
+                                        <span class="custom-type-name" x-text="customType.name"></span>
+                                        <span class="custom-type-unit" x-text="customType.unit"></span>
+                                        <div class="custom-type-actions">
+                                            <button class="btn-icon" @click="editCustomType(customType.id)" title="Edit">✏️</button>
+                                            <button class="btn-icon" @click="deleteCustomType(customType.id)" title="Delete">🗑️</button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Environmental Data -->
+                    <div class="settings-section">
+                        <div class="setting-header-row">
+                            <h3>Environmental Data</h3>
+                            <label class="toggle-label" style="display: flex; gap: 4px;">
+                                <input type="checkbox" x-model="settings.enableEnvironmentalData" @change="saveSettings()">
+                                <span>Enabled</span>
+                            </label>
+                        </div>
+                        <p class="settings-description">Track weather, barometric pressure, and lunar phases alongside your entries to discover environmental correlations.</p>
+
+                        <template x-if="settings.enableEnvironmentalData">
+                            <div class="environmental-status">
+                                <div class="status-row">
+                                    <span class="status-label">Location Permission:</span>
+                                    <span class="status-value" :class="{
+                                        'status-granted': locationPermissionStatus === 'granted',
+                                        'status-denied': locationPermissionStatus === 'denied',
+                                        'status-warning': locationPermissionStatus === 'timeout' || locationPermissionStatus === 'unavailable',
+                                        'status-unknown': locationPermissionStatus === 'unknown'
+                                    }" x-text="locationPermissionStatus === 'granted' ? '✅ Granted' : 
+                                              locationPermissionStatus === 'denied' ? '❌ Denied' : 
+                                              locationPermissionStatus === 'unavailable' ? '⚠️ Unavailable' :
+                                              locationPermissionStatus === 'timeout' ? '⏱️ Timed out' :
+                                              locationPermissionStatus === 'error' ? '⚠️ Error' : '⏳ Not requested'"></span>
+                                </div>
+                                
+                                <template x-if="userLocation">
+                                    <div class="status-row">
+                                        <span class="status-label">Location:</span>
+                                        <span class="status-value" x-text="userLocation.latitude.toFixed(2) + '°, ' + userLocation.longitude.toFixed(2) + '°'"></span>
+                                    </div>
+                                </template>
+
+                                <template x-if="environmentalDataLoading">
+                                    <div class="status-row">
+                                        <span class="status-loading">🔄 Fetching environmental data...</span>
+                                    </div>
+                                </template>
+
+                                <template x-if="environmentalBackfillProgress">
+                                    <div class="backfill-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" :style="'width: ' + (environmentalBackfillProgress.completed / environmentalBackfillProgress.total * 100) + '%'"></div>
+                                        </div>
+                                        <span class="progress-text" x-text="environmentalBackfillProgress.status + ' (' + environmentalBackfillProgress.completed + '/' + environmentalBackfillProgress.total + ')'"></span>
+                                    </div>
+                                </template>
+
+                                <template x-if="locationPermissionStatus === 'denied'">
+                                    <p class="settings-hint">Location access was denied. Please enable it in your browser settings to use environmental data features.</p>
+                                </template>
+
+                                <template x-if="locationPermissionStatus === 'timeout'">
+                                    <p class="settings-hint">Location request timed out. This can happen in incognito/private browsing mode or when GPS is unavailable. Try again or use a regular browser window.</p>
+                                </template>
+
+                                <template x-if="locationPermissionStatus === 'unavailable'">
+                                    <p class="settings-hint">Location is currently unavailable. Make sure location services are enabled on your device.</p>
+                                </template>
+
+                                <template x-if="(locationPermissionStatus === 'unknown' || locationPermissionStatus === 'timeout' || locationPermissionStatus === 'unavailable' || locationPermissionStatus === 'error') && !environmentalDataLoading">
+                                    <button class="btn btn-secondary btn-small" @click="fetchEnvironmentalData()">
+                                        <span x-text="locationPermissionStatus === 'unknown' ? '📍 Grant Location Access' : '🔄 Retry Location'"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+
+                    <!-- Account / Sign In -->
+                    <div class="settings-section">
+                        <h3>Account</h3>
+                        <template x-if="!authUser">
+                            <div>
+                                <p class="settings-description">Create an account to enable push notifications for daily entry reminders.</p>
+                                <div class="auth-buttons">
+                                    <button class="btn btn-primary" @click="openAuthModal('login')">Sign In</button>
+                                    <button class="btn btn-secondary" @click="openAuthModal('register')">Create Account</button>
+                                </div>
+                            </div>
+                        </template>
+                        <template x-if="authUser">
+                            <div>
+                                <div class="account-info">
+                                    <div class="account-info-row">
+                                        <span class="account-info-label">Email</span>
+                                        <span class="account-info-value" x-text="authUser.email"></span>
+                                    </div>
+                                    <div class="account-info-row">
+                                        <span class="account-info-label">Plan</span>
+                                        <span class="account-info-value account-tier" x-text="(authUser.tier || 'free').charAt(0).toUpperCase() + (authUser.tier || 'free').slice(1)"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Push Notifications -->
+                                <div class="push-section">
+                                    <h4>Push Notifications</h4>
+                                    <template x-if="!pushSupported">
+                                        <p class="push-unsupported">Push notifications are not supported on this device. Install the app to your home screen on iOS 16.4+ or use a supported browser.</p>
+                                    </template>
+                                    <template x-if="pushSupported">
+                                        <div>
+                                            <template x-if="!pushSubscribed">
+                                                <div>
+                                                    <p class="settings-description">Receive daily reminders to log your entries at a time you choose.</p>
+                                                    <button class="btn btn-primary" @click="enablePushNotifications()" :disabled="pushLoading">
+                                                        <span x-text="pushLoading ? 'Enabling...' : 'Enable Push Reminders'"></span>
+                                                    </button>
+                                                </div>
+                                            </template>
+                                            <template x-if="pushSubscribed">
+                                                <div>
+                                                    <div class="push-active-badge">✅ Push notifications active</div>
+                                                    <div class="form-group push-time-group">
+                                                        <label for="push-reminder-time">Daily reminder time</label>
+                                                        <div class="push-time-row">
+                                                            <input type="time" id="push-reminder-time" x-model="pushReminderTime">
+                                                            <button class="btn btn-secondary" @click="saveReminderTime()">Save</button>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-secondary btn-small" @click="disablePushNotifications()" :disabled="pushLoading">
+                                                        <span x-text="pushLoading ? 'Disabling...' : 'Disable Push Reminders'"></span>
+                                                    </button>
+                                                </div>
+                                            </template>
+                                            <template x-if="pushError">
+                                                <p class="error-text" x-text="pushError"></p>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Danger Zone -->
+                                <div class="danger-zone">
+                                    <h4>Danger Zone</h4>
+                                    <template x-if="!showDeleteConfirm">
+                                        <button class="btn btn-danger btn-small" @click="showDeleteConfirm = true">Delete Account</button>
+                                    </template>
+                                    <template x-if="showDeleteConfirm">
+                                        <div class="delete-confirm">
+                                            <p class="delete-confirm-text">This will permanently delete your account. Your local data will not be affected.</p>
+                                            <div class="delete-confirm-actions">
+                                                <button class="btn btn-danger" @click="confirmDeleteAccount()">Yes, Delete My Account</button>
+                                                <button class="btn btn-secondary" @click="showDeleteConfirm = false">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- About -->
+                    <div class="settings-section">
+                        <h3>About</h3>
+                        <p class="about-text">Life Patterns v1.0</p>
+                        <p class="about-text small">For personal wellness tracking only. Not medical advice.</p>
+                    </div>
+                </div>
+            </template>
+        </main>
+
+        <!-- Export Dialog -->
+        <template x-if="showExportDialog">
+            <div class="modal-overlay" @click.self="closeExportDialog()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Export Data</h2>
+                        <button class="close-btn" @click="closeExportDialog()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="warning-box">
+                            <strong>⚠️ CSV Security Warning</strong>
+                            <p>Before opening CSV files in Excel or Google Sheets:</p>
+                            <ul>
+                                <li>Open in a plain text editor first to verify contents</li>
+                                <li>Disable macros and automatic formula execution</li>
+                                <li>This file has been sanitized, but exercise caution</li>
+                            </ul>
+                        </div>
+                        <div class="export-options">
+                            <button class="btn btn-primary" @click="exportCSV()">Export as CSV</button>
+                            <button class="btn btn-primary" @click="exportJSON()">Export as JSON</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Import Dialog -->
+        <template x-if="showImportDialog">
+            <div class="modal-overlay" @click.self="closeImportDialog()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Import Data</h2>
+                        <button class="close-btn" @click="closeImportDialog()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="import-file">Select File (CSV or JSON)</label>
+                            <input type="file" id="import-file" accept=".csv,.json" @change="handleFileSelect($event)">
+                        </div>
+
+                        <template x-if="importFile">
+                            <div class="import-file-info">
+                                <p><strong>Selected:</strong> <span x-text="importFile.name"></span></p>
+                                <p><strong>Size:</strong> <span x-text="(importFile.size / 1024).toFixed(2) + ' KB'"></span></p>
+                            </div>
+                        </template>
+
+                        <template x-if="importProgress">
+                            <div class="import-progress">
+                                <p x-text="importProgress"></p>
+                            </div>
+                        </template>
+
+                        <template x-if="importErrors.length > 0">
+                            <div class="import-errors">
+                                <strong>⚠️ Import Errors (<span x-text="importErrors.length"></span>):</strong>
+                                <div class="error-list">
+                                    <template x-for="error in importErrors.slice(0, 10)" :key="error.index">
+                                        <p class="error-item">
+                                            <span>Entry <span x-text="error.index"></span>: <span x-text="error.message"></span></span>
+                                        </p>
+                                    </template>
+                                    <template x-if="importErrors.length > 10">
+                                        <p class="error-more">... and <span x-text="importErrors.length - 10"></span> more errors</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div class="modal-actions">
+                            <button class="btn btn-primary" @click="processImport()" :disabled="!importFile || importProgress">
+                                Import
+                            </button>
+                            <button class="btn btn-secondary" @click="closeImportDialog()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Custom Type Dialog -->
+        <template x-if="showCustomTypeDialog">
+            <div class="modal-overlay" @click.self="closeCustomTypeDialog()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 x-text="editingCustomType ? 'Edit Custom Type' : 'Add Custom Type'"></h2>
+                        <button class="close-btn" @click="closeCustomTypeDialog()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="custom-type-name">Name *</label>
+                            <input type="text" id="custom-type-name" x-model="customTypeForm.name" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group emoji-picker-group">
+                            <label for="custom-type-emoji-search">Emoji</label>
+                            <input type="text"
+                                   id="custom-type-emoji-search"
+                                   x-model="emojiSearch"
+                                   @focus="emojiDropdownOpen = true"
+                                   @input="emojiDropdownOpen = true"
+                                   placeholder="Search emojis by name or keyword"
+                                   autocomplete="off">
+                            <template x-if="emojiDropdownOpen && filteredEmojiOptions.length > 0">
+                                <div class="emoji-dropdown">
+                                    <template x-for="option in filteredEmojiOptions" :key="option.name">
+                                        <button type="button" class="emoji-option" @click="selectCustomTypeEmoji(option)">
+                                            <span class="emoji-option-emoji" x-text="option.emoji"></span>
+                                            <span class="emoji-option-name" x-text="option.name"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+                            <small class="emoji-picker-selected" x-text="'Selected: ' + customTypeForm.emoji"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="custom-type-value-type">Value Type</label>
+                            <select id="custom-type-value-type" x-model="customTypeForm.valueType">
+                                <option value="number">Number</option>
+                                <option value="text">Text</option>
+                            </select>
+                        </div>
+
+                        <template x-if="customTypeForm.valueType === 'number'">
+                            <div>
+                                <div class="form-group">
+                                    <label for="custom-type-unit">Unit</label>
+                                    <input type="text" id="custom-type-unit" x-model="customTypeForm.unit" maxlength="20">
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="custom-type-min">Min Value</label>
+                                        <input type="number" id="custom-type-min" x-model.number="customTypeForm.min">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="custom-type-max">Max Value</label>
+                                        <input type="number" id="custom-type-max" x-model.number="customTypeForm.max">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="custom-type-step">Step</label>
+                                    <input type="number" id="custom-type-step" x-model.number="customTypeForm.step" min="0.01" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="custom-type-aggregation">Chart Aggregation</label>
+                                    <select id="custom-type-aggregation" x-model="customTypeForm.aggregation">
+                                        <option value="average">Average</option>
+                                        <option value="sum">Sum</option>
+                                        <option value="last">Last Value</option>
+                                        <option value="count">Count</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div class="modal-actions">
+                            <button class="btn btn-primary" @click="saveCustomType()">
+                                <span x-text="editingCustomType ? 'Update' : 'Create'"></span>
+                            </button>
+                            <button class="btn btn-secondary" @click="closeCustomTypeDialog()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Auth Modal (Login / Register) -->
+        <template x-if="showAuthModal">
+            <div class="modal-overlay" @click.self="closeAuthModal()">
+                <div class="modal-content modal-auth">
+                    <div class="modal-header">
+                        <h2 x-text="authTab === 'login' ? 'Sign In' : 'Create Account'"></h2>
+                        <button class="close-btn" @click="closeAuthModal()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Tabs -->
+                        <div class="auth-tabs">
+                            <button class="auth-tab" :class="{ 'auth-tab-active': authTab === 'login' }" @click="authTab = 'login'; authError = null; authSuccess = null">Sign In</button>
+                            <button class="auth-tab" :class="{ 'auth-tab-active': authTab === 'register' }" @click="authTab = 'register'; authError = null; authSuccess = null">Create Account</button>
+                        </div>
+
+                        <!-- Error / Success messages -->
+                        <template x-if="authError">
+                            <div class="auth-error" x-text="authError"></div>
+                        </template>
+                        <template x-if="authSuccess">
+                            <div class="auth-success" x-text="authSuccess"></div>
+                        </template>
+
+                        <!-- Login Form -->
+                        <template x-if="authTab === 'login'">
+                            <form @submit.prevent="submitLogin()">
+                                <div class="form-group">
+                                    <label for="auth-login-email">Email</label>
+                                    <input type="email" id="auth-login-email" x-model="authForm.email"
+                                           placeholder="you@example.com" autocomplete="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auth-login-password">Password</label>
+                                    <input type="password" id="auth-login-password" x-model="authForm.password"
+                                           placeholder="••••••••" autocomplete="current-password" required>
+                                </div>
+                                <div class="modal-actions">
+                                    <button type="submit" class="btn btn-primary" :disabled="authLoading">
+                                        <span x-text="authLoading ? 'Signing in...' : 'Sign In'"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" @click="closeAuthModal()">Continue without account</button>
+                                </div>
+                            </form>
+                        </template>
+
+                        <!-- Register Form -->
+                        <template x-if="authTab === 'register'">
+                            <form @submit.prevent="submitRegister()">
+                                <div class="form-group">
+                                    <label for="auth-reg-email">Email</label>
+                                    <input type="email" id="auth-reg-email" x-model="authForm.email"
+                                           placeholder="you@example.com" autocomplete="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auth-reg-password">Password</label>
+                                    <input type="password" id="auth-reg-password" x-model="authForm.password"
+                                           placeholder="Min 8 chars, upper, lower, number" autocomplete="new-password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auth-reg-confirm">Confirm Password</label>
+                                    <input type="password" id="auth-reg-confirm" x-model="authForm.confirmPassword"
+                                           placeholder="Repeat password" autocomplete="new-password" required>
+                                </div>
+                                <p class="auth-privacy-note">Your data stays on this device. An account is optional and only used for push notification reminders.</p>
+                                <div class="modal-actions">
+                                    <button type="submit" class="btn btn-primary" :disabled="authLoading">
+                                        <span x-text="authLoading ? 'Creating account...' : 'Create Account'"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" @click="closeAuthModal()">Continue without account</button>
+                                </div>
+                            </form>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Correlation Analysis Dialog -->
+        <template x-if="showCorrelationDialog">
+            <div class="modal-overlay" @click.self="closeCorrelationDialog()">
+                <div class="modal-content modal-large">
+                    <div class="modal-header">
+                        <h2>Correlation Analysis</h2>
+                        <button class="close-btn" @click="closeCorrelationDialog()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="correlation-description">
+                            Analyzing patterns between your tracked data types over the last 90 days.
+                            Correlation values range from -1 (inverse relationship) to +1 (direct relationship).
+                        </p>
+
+                        <button class="btn btn-primary" @click="analyzeCorrelations()" :disabled="correlationLoading">
+                            <span x-text="correlationLoading ? 'Analyzing...' : 'Run Analysis'"></span>
+                        </button>
+
+                        <template x-if="correlationResults.length > 0">
+                            <div class="correlation-results">
+                                <h3>Results</h3>
+                                <div class="correlation-list">
+                                    <template x-for="result in correlationResults" :key="`${result.type1}-${result.type2}`">
+                                        <div class="correlation-item">
+                                            <div class="correlation-types">
+                                                <span x-text="getTypeEmoji(result.type1)"></span>
+                                                <span x-text="getTypeLabel(result.type1)"></span>
+                                                <span class="correlation-arrow">↔</span>
+                                                <span x-text="getTypeEmoji(result.type2)"></span>
+                                                <span x-text="getTypeLabel(result.type2)"></span>
+                                            </div>
+                                            <div class="correlation-value">
+                                                <span class="correlation-strength-label"
+                                                      :class="getCorrelationStrengthClass(result.correlation)"
+                                                      :title="result.correlation !== null ? 'Correlation score: ' + result.correlation.toFixed(3) : 'N/A'"
+                                                      x-text="getCorrelationStrengthLabel(result.correlation)">
+                                                </span>
+                                            </div>
+                                            <div class="correlation-sample">
+                                                <span x-text="`n=${result.sampleSize}`"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-if="!correlationLoading && correlationResults.length === 0 && correlationResults !== null">
+                            <div class="correlation-empty">
+                                <p>No correlations found. Make sure you have at least 2 enabled data types with sufficient entries.</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Scripts - Load dependencies first, then app code, then Alpine.js last -->
+    <script src="/vendor/dexie.min.js" integrity="sha384-vG8R9Zn5YZHCeXt9gLNp8MnsUCqmIy7HPxhdOdLGa/30/c8uZXFrrN0iKGID/ZvC"></script>
+    <script src="/vendor/chart.min.js" integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4"></script>
+    <script src="/vendor/dompurify.min.js" integrity="sha384-3HPB1XT51W3gGRxAmZ+qbZwRpRlFQL632y8x+adAqCr4Wp3TaWwCLSTAJJKbyWEK"></script>
+    <script src="/js/db.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/importExport.js"></script>
+    <script src="/js/externalData.js"></script>
+    <script src="/js/customTypes.js"></script>
+    <script src="/js/correlation.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    <script defer src="/vendor/alpine.min.js" integrity="sha384-l8f0VcPi/M1iHPv8egOnY/15TDwqgbOR1anMIJWvU6nLRgZVLTLSaNqi/TOoT5Fh"></script>
+</body>
+</html>

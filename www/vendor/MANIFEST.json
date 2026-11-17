@@ -1,0 +1,30 @@
+{
+  "alpine.js": {
+    "version": "3.14.1",
+    "source": "https://github.com/alpinejs/alpine/releases/tag/v3.14.1",
+    "sha384": "l8f0VcPi/M1iHPv8egOnY/15TDwqgbOR1anMIJWvU6nLRgZVLTLSaNqi/TOoT5Fh",
+    "verifiedDate": "2026-03-30",
+    "notes": "Patches CVE-2024-28865 and CVE-2023-49797"
+  },
+  "dexie.js": {
+    "version": "3.2.4",
+    "source": "https://github.com/dexie/Dexie.js/releases/tag/v3.2.4",
+    "sha384": "vG8R9Zn5YZHCeXt9gLNp8MnsUCqmIy7HPxhdOdLGa/30/c8uZXFrrN0iKGID/ZvC",
+    "verifiedDate": "2026-03-30",
+    "notes": "IndexedDB wrapper, low risk, well-maintained"
+  },
+  "chart.js": {
+    "version": "4.4.1",
+    "source": "https://github.com/chartjs/Chart.js/releases/tag/v4.4.1",
+    "sha384": "9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4",
+    "verifiedDate": "2026-03-30",
+    "notes": "Data visualization, low risk, no critical CVEs"
+  },
+  "dompurify.js": {
+    "version": "3.0.9",
+    "source": "https://github.com/cure53/DOMPurify/releases/tag/3.0.9",
+    "sha384": "3HPB1XT51W3gGRxAmZ+qbZwRpRlFQL632y8x+adAqCr4Wp3TaWwCLSTAJJKbyWEK",
+    "verifiedDate": "2026-03-30",
+    "notes": "HTML sanitization for XSS prevention"
+  }
+}

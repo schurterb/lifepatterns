@@ -1,0 +1,29 @@
+{
+  "name": "pattern-tracker",
+  "version": "1.0.0",
+  "description": "Track patterns in your daily life to understand yourself better",
+  "scripts": {
+    "dev": "python3 -m http.server 8000 --directory www",
+    "deploy": "bash scripts/deploy.sh production",
+    "deploy:worker": "npx wrangler --config wrangler.local.toml deploy --env production",
+    "deploy:dev": "bash scripts/deploy.sh development",
+    "login": "npx wrangler login",
+    "whoami": "npx wrangler whoami",
+    "test": "node ./tests/run-all-tests.js"
+  },
+  "keywords": [
+    "health",
+    "tracking",
+    "wellness",
+    "patterns",
+    "pwa"
+  ],
+  "author": "schurterb",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.82.2"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.2.0"
+  }
+}

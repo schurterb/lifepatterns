@@ -1,0 +1,78 @@
+{
+  "name": "Life Patterns",
+  "short_name": "Life Patterns",
+  "description": "Track patterns in your daily life to understand yourself better",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='bg1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230f172a'/><stop offset='100%25' stop-color='%231e3a8a'/></linearGradient></defs><rect width='192' height='192' fill='url(%23bg1)'/><g opacity='0.15' stroke='%2394a3b8' stroke-width='1.5'><line x1='24' y1='56' x2='168' y2='56'/><line x1='24' y1='96' x2='168' y2='96'/><line x1='24' y1='136' x2='168' y2='136'/></g><path d='M 20 132 C 52 132, 64 68, 96 68 C 128 68, 140 120, 172 90' fill='none' stroke='%238b5cf6' stroke-width='9' stroke-linecap='round'/><path d='M 20 108 C 50 64, 76 134, 112 86 C 136 54, 152 60, 172 48' fill='none' stroke='%2310b981' stroke-width='10' stroke-linecap='round'/><path d='M 20 140 C 56 140, 72 46, 106 92 C 132 126, 148 44, 172 68' fill='none' stroke='%233b82f6' stroke-width='11' stroke-linecap='round'/><circle cx='96' cy='68' r='6' fill='%23ffffff' stroke='%238b5cf6' stroke-width='4'/><circle cx='112' cy='86' r='6.5' fill='%23ffffff' stroke='%2310b981' stroke-width='4'/><circle cx='148' cy='62' r='7' fill='%23ffffff' stroke='%233b82f6' stroke-width='4'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='512' height='512'><defs><linearGradient id='bg1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230f172a'/><stop offset='100%25' stop-color='%231e3a8a'/></linearGradient></defs><rect width='192' height='192' fill='url(%23bg1)'/><g opacity='0.15' stroke='%2394a3b8' stroke-width='1.5'><line x1='24' y1='56' x2='168' y2='56'/><line x1='24' y1='96' x2='168' y2='96'/><line x1='24' y1='136' x2='168' y2='136'/></g><path d='M 20 132 C 52 132, 64 68, 96 68 C 128 68, 140 120, 172 90' fill='none' stroke='%238b5cf6' stroke-width='9' stroke-linecap='round'/><path d='M 20 108 C 50 64, 76 134, 112 86 C 136 54, 152 60, 172 48' fill='none' stroke='%2310b981' stroke-width='10' stroke-linecap='round'/><path d='M 20 140 C 56 140, 72 46, 106 92 C 132 126, 148 44, 172 68' fill='none' stroke='%233b82f6' stroke-width='11' stroke-linecap='round'/><circle cx='96' cy='68' r='6' fill='%23ffffff' stroke='%238b5cf6' stroke-width='4'/><circle cx='112' cy='86' r='6.5' fill='%23ffffff' stroke='%2310b981' stroke-width='4'/><circle cx='148' cy='62' r='7' fill='%23ffffff' stroke='%233b82f6' stroke-width='4'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='bg1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230f172a'/><stop offset='100%25' stop-color='%231e3a8a'/></linearGradient></defs><rect width='192' height='192' fill='url(%23bg1)'/><g opacity='0.15' stroke='%2394a3b8' stroke-width='1.5'><line x1='32' y1='64' x2='160' y2='64'/><line x1='32' y1='96' x2='160' y2='96'/><line x1='32' y1='128' x2='160' y2='128'/></g><path d='M 32 125 C 58 125, 68 74, 96 74 C 122 74, 132 115, 160 91' fill='none' stroke='%238b5cf6' stroke-width='8.5' stroke-linecap='round'/><path d='M 32 106 C 56 70, 78 126, 108 88 C 128 62, 142 67, 160 58' fill='none' stroke='%2310b981' stroke-width='9.5' stroke-linecap='round'/><path d='M 32 131 C 62 131, 74 56, 104 93 C 125 120, 138 54, 160 74' fill='none' stroke='%233b82f6' stroke-width='10.5' stroke-linecap='round'/><circle cx='96' cy='74' r='5.5' fill='%23ffffff' stroke='%238b5cf6' stroke-width='3.5'/><circle cx='108' cy='88' r='6' fill='%23ffffff' stroke='%2310b981' stroke-width='3.5'/><circle cx='138' cy='69' r='6.5' fill='%23ffffff' stroke='%233b82f6' stroke-width='3.5'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f9fafb' width='540' height='720'/><text x='50%' y='100' font-size='40' font-weight='bold' text-anchor='middle' fill='%231f2937'>Life Patterns</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["health", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Log Mood",
+      "short_name": "Mood",
+      "description": "Quickly log your mood",
+      "url": "/?shortcut=mood",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text x='50%' y='50%' font-size='60' dominant-baseline='middle' text-anchor='middle'>😊</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Log Sleep",
+      "short_name": "Sleep",
+      "description": "Quickly log your sleep",
+      "url": "/?shortcut=sleep",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text x='50%' y='50%' font-size='60' dominant-baseline='middle' text-anchor='middle'>😴</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
