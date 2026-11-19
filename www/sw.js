@@ -1,5 +1,5 @@
 // Service Worker for Life Patterns
-const CACHE_NAME = 'life-patterns-v3';
+const CACHE_NAME = 'life-patterns-v4';
 
 // Same-origin API paths — always network, never cached
 const API_PREFIXES = ['/health', '/auth/', '/account', '/push/', '/data/', '/subscription/', '/sync/', '/ai/'];

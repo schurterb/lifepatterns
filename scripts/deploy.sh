@@ -79,8 +79,11 @@ fi
 echo ""
 
 # Deploy to Cloudflare Pages
-echo "📤 Uploading files to Cloudflare Pages..."
-if npx wrangler pages deploy www/ --project-name=pattern-tracker; then
+# The project's production branch is "production" — deploys on any other branch
+# are previews and never reach the custom domain.
+PAGES_BRANCH="$ENVIRONMENT"
+echo "📤 Uploading files to Cloudflare Pages (branch: $PAGES_BRANCH)..."
+if npx wrangler pages deploy www/ --project-name=pattern-tracker --branch="$PAGES_BRANCH"; then
     echo ""
     echo "✅ Deployment successful!"
     echo ""

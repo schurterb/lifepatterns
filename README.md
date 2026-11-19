@@ -1,4 +1,4 @@
-# Life Patterns
+# <img src="www/assets/icons/favicon.svg" alt="Life Patterns logo" width="48" valign="middle"> Life Patterns
 
 A privacy-first, local-first PWA for tracking daily metrics and discovering patterns in your own life.
 
@@ -29,47 +29,19 @@ Log mood, sleep, exercise, nutrition, and more — then visualize trends and sur
 - **AI-powered insights** *(in development)* — pattern summaries via Cloudflare Workers AI (OpenAI fallback) and photo-based nutrition estimation (paid tier)
 - **Subscriptions** *(in development)* — Stripe-powered paid tier for sync and AI features
 
-## Architecture
+## Getting Started (Users)
 
-```
-┌─────────────────────────────────────────────┐
-│  Static frontend (www/) — Cloudflare Pages   │
-│  Vanilla JS + vendored libs, zero build      │
-│  IndexedDB (Dexie) + LocalStorage            │
-└──────────────┬──────────────────────────────┘
-               │ HTTPS (JWT auth)
-┌──────────────▼──────────────────────────────┐
-│  Cloudflare Worker API (src/)                │
-│  auth · push · data · account · sync · ai    │
-│  ┌────────┬──────────────┬────────┬───────┐  │
-│  │ D1 DB  │ KV (tokens,  │ R2     │Workers│  │
-│  │ users, │ rate limit,  │ sync   │ AI    │  │
-│  │ cache) │ external)    │ bucket │ +OA*  │  │
-│  └────────┴──────────────┴────────┴───────┘  │
-└─────────────────────────────────────────────┘
-              *OpenAI fallback
-```
+Life Patterns is a Progressive Web App — no app store needed.
 
-## Tech Stack
+1. Open **https://lifepatterns.godsartificer.com** in your phone's browser
+2. Install it:
+   - **Android (Chrome):** tap the ⋮ menu → **Add to Home screen** / **Install app**
+   - **iOS (Safari):** tap **Share** → **Add to Home Screen**
+3. Launch **Life Patterns** from your home screen — it works offline
 
-**Frontend** — no build step; libraries vendored in `www/vendor/` with SRI hashes (see `www/vendor/MANIFEST.json`):
+> **iOS note:** push reminders require the Home Screen install above and iOS 16.4+.
 
-- Alpine.js 3.14.1 — reactive UI
-- Chart.js 4.4.1 — visualization
-- Dexie.js 3.2.4 — IndexedDB wrapper
-- DOMPurify 3.0.9 — XSS-safe sanitization
-
-**Backend** — Cloudflare Workers (ES modules):
-
-- D1 (SQLite) — users, push subscriptions, cached environmental data
-- KV — token revocation, rate limiting, external-data cache
-- R2 — encrypted sync payloads
-- Workers AI — insights and food-photo analysis (OpenAI fallback)
-- Stripe — subscription billing
-
-**Security** — PBKDF2-SHA256 (600k iterations) password hashing, JWT access/refresh with KV-backed revocation, per-route KV rate limiting, strict CSP via `www/_headers`, client-side AES-GCM encryption for sync, CSV formula-injection escaping on export.
-
-## Getting Started
+## Getting Started (Developers)
 
 Requires Python 3 (static dev server) and Node.js + npm (tests and Wrangler).
 
@@ -114,11 +86,49 @@ Optional paid-tier setup (R2 bucket, Stripe keys, OpenAI key):
 ## Deployment
 
 - **`npm run deploy`** (production) or **`npm run deploy:dev`** (development) — deploys the API Worker first, then the static frontend to Cloudflare Pages, then verifies `GET /health` returns Worker JSON on the app origin.
-- **`npm run deploy:worker`** — deploys only the Worker (`--config wrangler.local.toml --env production`).
+- **`npm run deploy:worker`** — deploys only the Worker (`--config wrangler.prod.toml --env production`).
 
 The API is served **same-origin**: production Worker routes (`<host>/auth/*`, `/account*`, `/push/*`, `/data/*`, `/subscription/*`, `/sync/*`, `/ai/*`, `/health`) are defined under `[env.production]` in the wrangler config and take precedence over Pages static serving on the shared hostname. This keeps HttpOnly cookie auth and CSP `connect-src 'self'` working with no client-side API base URL.
 
-> **Local config:** a real deployment config with your resource IDs lives in the gitignored `wrangler.local.toml` — deploy with `npx wrangler --config wrangler.local.toml deploy`. The checked-in `wrangler.toml` is a template with placeholders. (Wrangler only parses `*.toml` files — a config named `wrangler.toml.local` is silently ignored.) Route patterns and bindings must be mirrored in both files; `tests/test-api-routing.js` guards route drift. `JWT_SECRET` is never stored in config files — set it via `npx wrangler --config wrangler.local.toml secret put JWT_SECRET --env <env>`.
+## Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│  Static frontend (www/) — Cloudflare Pages   │
+│  Vanilla JS + vendored libs, zero build      │
+│  IndexedDB (Dexie) + LocalStorage            │
+└──────────────┬──────────────────────────────┘
+               │ HTTPS (JWT auth)
+┌──────────────▼──────────────────────────────┐
+│  Cloudflare Worker API (src/)                │
+│  auth · push · data · account · sync · ai    │
+│  ┌────────┬──────────────┬────────┬───────┐  │
+│  │ D1 DB  │ KV (tokens,  │ R2     │Workers│  │
+│  │ users, │ rate limit,  │ sync   │ AI    │  │
+│  │ cache) │ external)    │ bucket │ +OA*  │  │
+│  └────────┴──────────────┴────────┴───────┘  │
+└─────────────────────────────────────────────┘
+              *OpenAI fallback
+```
+
+## Tech Stack
+
+**Frontend** — no build step; libraries vendored in `www/vendor/` with SRI hashes (see `www/vendor/MANIFEST.json`):
+
+- Alpine.js 3.14.1 — reactive UI
+- Chart.js 4.4.1 — visualization
+- Dexie.js 3.2.4 — IndexedDB wrapper
+- DOMPurify 3.0.9 — XSS-safe sanitization
+
+**Backend** — Cloudflare Workers (ES modules):
+
+- D1 (SQLite) — users, push subscriptions, cached environmental data
+- KV — token revocation, rate limiting, external-data cache
+- R2 — encrypted sync payloads
+- Workers AI — insights and food-photo analysis (OpenAI fallback)
+- Stripe — subscription billing
+
+**Security** — PBKDF2-SHA256 (600k iterations) password hashing, JWT access/refresh with KV-backed revocation, per-route KV rate limiting, strict CSP via `www/_headers`, client-side AES-GCM encryption for sync, CSV formula-injection escaping on export.
 
 ## Project Structure
 
@@ -143,3 +153,7 @@ pattern_tracker/
 ## License
 
 [MIT](LICENSE)
+
+## Author
+
+Built by [schurterb — God's Artificer](https://godsartificer.com)
